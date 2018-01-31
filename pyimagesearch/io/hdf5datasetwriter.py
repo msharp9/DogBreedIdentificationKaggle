@@ -20,17 +20,20 @@ class HDF5DatasetWriter:
 			dtype="float")
 		self.labels = self.db.create_dataset("labels", (dims[0],),
 			dtype="int")
+		self.ids = self.db.create_dataset("ids", (dims[0],),
+			dtype="int")
 
 		# store the buffer size, then initialize the buffer itself
 		# along with the index into the datasets
 		self.bufSize = bufSize
-		self.buffer = {"data": [], "labels": []}
+		self.buffer = {"data": [], "labels": [], "ids": []}
 		self.idx = 0
 
-	def add(self, rows, labels):
+	def add(self, rows, labels, ids):
 		# add the rows and labels to the buffer
 		self.buffer["data"].extend(rows)
 		self.buffer["labels"].extend(labels)
+		self.buffer["ids"].extend(ids)
 
 		# check to see if the buffer needs to be flushed to disk
 		if len(self.buffer["data"]) >= self.bufSize:
@@ -41,8 +44,9 @@ class HDF5DatasetWriter:
 		i = self.idx + len(self.buffer["data"])
 		self.data[self.idx:i] = self.buffer["data"]
 		self.labels[self.idx:i] = self.buffer["labels"]
+		self.ids[self.idx:i] = self.buffer["ids"]
 		self.idx = i
-		self.buffer = {"data": [], "labels": []}
+		self.buffer = {"data": [], "labels": [], "ids": []}
 
 	def storeClassLabels(self, classLabels):
 		# create a dataset to store the actual class label names,
