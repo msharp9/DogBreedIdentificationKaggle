@@ -20,8 +20,9 @@ class HDF5DatasetWriter:
 			dtype="float")
 		self.labels = self.db.create_dataset("labels", (dims[0],),
 			dtype="int")
+		dt = h5py.special_dtype(vlen=str)
 		self.ids = self.db.create_dataset("ids", (dims[0],),
-			dtype="int")
+			dtype=dt)
 
 		# store the buffer size, then initialize the buffer itself
 		# along with the index into the datasets

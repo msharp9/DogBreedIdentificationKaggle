@@ -1,5 +1,5 @@
 # USAGE
-# python build_hdf5.py --image_path .. --output output
+# python build_hdf5.py
 
 # import the necessary packages
 from config import config
@@ -11,17 +11,9 @@ from imutils import paths
 import numpy as np
 import pandas as pd
 import progressbar
-import argparse
 import json
 import cv2
 import os
-
-# # construct the argument parser, only need an image input
-# ap = argparse.ArgumentParser()
-# ap.add_argument("-i", "--image_path", required=True, help="path to the image files")
-# ap.add_argument("-o", "--output", required=True, help="path for outputs")
-# ap.add_argument("-s", "--buffer-size", type=int, default=1000, help="size of feature extraction buffer")
-# args = vars(ap.parse_args())
 
 # Grab Label Data and build dictionary/grab class names
 data = pd.read_csv('labels.csv')
@@ -69,7 +61,7 @@ for (dType, paths, labels, ids, outputPath) in datasets:
 	# create HDF5 writer
 	print("[INFO] building {}...".format(outputPath))
 	writer = HDF5DatasetWriter((len(paths), config.INPUT_SIZE, config.INPUT_SIZE, 3),
-		outputPath, bufSize=args["buffer_size"])
+		outputPath)
 	writer.storeClassLabels(le.classes_)
 
 	# initialize the progress bar
