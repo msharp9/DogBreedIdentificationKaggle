@@ -5,7 +5,7 @@ import h5py
 
 class HDF5DatasetGenerator:
 	def __init__(self, dbPath, batchSize, preprocessors=None,
-		aug=None, binarize=True, model=None, set=None, classes=2):
+		aug=None, binarize=True, ppi=None, model=None, set=None, classes=2):
 		# store the batch size, preprocessors, and data augmentor,
 		# whether or not the labels should be binarized, along with
 		# the total number of classes
@@ -13,6 +13,7 @@ class HDF5DatasetGenerator:
 		self.preprocessors = preprocessors
 		self.aug = aug
 		self.binarize = binarize
+		self.ppi = ppi
 		self.model = model
 		self.classes = classes
 
@@ -69,6 +70,9 @@ class HDF5DatasetGenerator:
 				if self.aug is not None:
 					(images, labels) = next(self.aug.flow(images,
 						labels, batch_size=self.batchSize))
+
+				if self.ppi is not None:
+					images = ppi(images)
 
 				# if model is provided, return features instead
 				if self.model is not None:
