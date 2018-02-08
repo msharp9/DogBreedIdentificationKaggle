@@ -9,6 +9,7 @@ from config import config
 from pyimagesearch.callbacks import TrainingMonitor
 from pyimagesearch.io import HDF5DatasetGenerator
 from pyimagesearch.preprocessing import ImageToArrayPreprocessor
+from pyimagesearch.preprocessing import SimplePreprocessor
 from pyimagesearch.nn.conv import FCHeadNet
 from keras.applications import xception
 from keras.applications import imagenet_utils
@@ -31,19 +32,22 @@ aug = ImageDataGenerator(preprocessing_function=xception.preprocess_input,
 	rotation_range=30, zoom_range=0.2,
 	width_shift_range=0.2, height_shift_range=0.2, shear_range=0.1,
 	horizontal_flip=True, fill_mode="nearest")
+aug2 = ImageDataGenerator(preprocessing_function=xception.preprocess_input)
 
 # # open the HDF5 database for reading then determine the index of
 # # the training and testing split, provided that this data was
 # # already shuffled *prior* to writing it to disk
 # db = h5py.File(config.TRAIN_HDF5, "r")
+# print(db["label_names"], len(db["label_names"]))
 # i = int(db["labels"].shape[0] * 0.75)
 
+sp = SimplePreprocessor(299, 299)
 iap = ImageToArrayPreprocessor()
 # initialize the training and validation dataset generators
 trainGen = HDF5DatasetGenerator(config.TRAIN_HDF5, 32, aug=aug,
-	preprocessors=[iap], binarize=False, set="train")
-valGen = HDF5DatasetGenerator(config.TRAIN_HDF5, 32, ppi=xception.preprocess_input,
-	preprocessors=[iap], binarize=False, set="val")
+	preprocessors=[sp, iap], classes=config.NUM_CLASSES, set="train")
+valGen = HDF5DatasetGenerator(config.TRAIN_HDF5, 32, aug=aug2,
+	preprocessors=[sp, iap], classes=config.NUM_CLASSES, set="val")
 
 # image = np.expand_dims(image, axis=0)
 # image = imagenet_utils.preprocess_input(image)
@@ -74,7 +78,7 @@ model.fit_generator(
 	trainGen.generator(),
 	steps_per_epoch=trainGen.numImages // 32,
 	validation_data=valGen.generator(),
-	validation_steps=valGen.numImages // 32,
+	validation_steps=(valGen.numImages-valGen.startImages) // 32,
 	epochs=1,
 	callbacks=callbacks, verbose=1)
 
