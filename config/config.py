@@ -1,5 +1,6 @@
 # define the paths to the images directory
 IMAGES_PATH = "train"
+TEST_IMAGES_PATH = "test"
 OUTPUT_PATH = "output"
 NUM_CLASSES = 120
 INPUT_SIZE = 299
