@@ -78,7 +78,7 @@ class HDF5DatasetGenerator:
 				if self.model is not None:
 					images = self.model.predict(images, batch_size=self.batchSize)
 
-				# print(images.shape,labels)
+
 				# yield a tuple of images and labels
 				yield (images, labels)
 
