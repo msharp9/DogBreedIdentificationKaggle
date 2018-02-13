@@ -7,10 +7,10 @@ import argparse
 
 # load the VGG16 network
 print("[INFO] loading network...")
-modelVGG16 = VGG16(weights="imagenet")
-modelResNet50 = ResNet50(weights="imagenet")
+# modelVGG16 = VGG16(weights="imagenet")
+# modelResNet50 = ResNet50(weights="imagenet")
 modelx = xception.Xception(weights="imagenet")
-modeli = inception_v3.InceptionV3(weights="imagenet")
+# modeli = inception_v3.InceptionV3(weights="imagenet")
 print("[INFO] showing layers...")
 
 models = [modelVGG16, modelResNet50, modelx, modeli]
